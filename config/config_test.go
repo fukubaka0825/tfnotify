@@ -50,7 +50,7 @@ func TestLoadFile(t *testing.T) {
 						Template: "",
 					},
 					Plan: Plan{
-						Template: "{{ .Title }}\n{{ .Message }}\n{{if .Result}}\n<pre><code> {{ .Result }}\n</pre></code>\n{{end}}\n<details><summary>Details (Click me)</summary>\n<pre><code> {{ .Body }}\n</pre></code></details>\n",
+						Template: "{{ .Title }}\n{{ .Message }}\n{{if .Result}}\n<pre><code>{{ .Result }}\n</pre></code>\n{{end}}\n<details><summary>Details (Click me)</summary>\n\n<pre><code>{{ .Body }}\n</pre></code></details>\n",
 					},
 					Apply: Apply{
 						Template: "",
@@ -90,7 +90,7 @@ func TestLoadFile(t *testing.T) {
 						Template: "",
 					},
 					Plan: Plan{
-						Template: "{{ .Title }}\n{{ .Message }}\n{{if .Result}}\n<pre><code> {{ .Result }}\n</pre></code>\n{{end}}\n<details><summary>Details (Click me)</summary>\n<pre><code> {{ .Body }}\n</pre></code></details>\n",
+						Template: "{{ .Title }}\n{{ .Message }}\n{{if .Result}}\n<pre><code>{{ .Result }}\n</pre></code>\n{{end}}\n<details><summary>Details (Click me)</summary>\n\n<pre><code>{{ .Body }}\n</pre></code></details>\n",
 					},
 					Apply: Apply{
 						Template: "",
@@ -137,6 +137,22 @@ func TestValidation(t *testing.T) {
 		},
 		{
 			contents: []byte("ci: codebuild\n"),
+			expected: "notifier is missing",
+		},
+		{
+			contents: []byte("ci: teamcity\n"),
+			expected: "notifier is missing",
+		},
+		{
+			contents: []byte("ci: drone\n"),
+			expected: "notifier is missing",
+		},
+		{
+			contents: []byte("ci: jenkins\n"),
+			expected: "notifier is missing",
+		},
+		{
+			contents: []byte("ci: gitlabci\n"),
 			expected: "notifier is missing",
 		},
 		{
@@ -211,6 +227,47 @@ ci: circleci
 notifier:
   typetalk:
     token: token
+    topic_id: 12345
+`),
+			expected: "",
+		},
+		{
+			contents: []byte(`
+ci: gitlabci
+notifier:
+  gitlab:
+    token: token
+    repository:
+      owner: owner
+`),
+			expected: "repository name is missing",
+		},
+		{
+			contents: []byte(`
+ci: gitlabci
+notifier:
+  slack:
+`),
+			expected: "notifier is missing",
+		},
+		{
+			contents: []byte(`
+ci: gitlabci
+notifier:
+  gitlab:
+    token: token
+    repository:
+      owner: owner
+      name: name
+`),
+			expected: "",
+		},
+		{
+			contents: []byte(`
+ci: gitlabci
+notifier:
+  typetalk:
+    token: token
 `),
 			expected: "Typetalk topic id is missing",
 		},
@@ -259,6 +316,10 @@ func TestGetNotifierType(t *testing.T) {
 		{
 			contents: []byte("repository:\n  owner: a\n  name: b\nci: circleci\nnotifier:\n  typetalk:\n    token: token\n"),
 			expected: "typetalk",
+		},
+		{
+			contents: []byte("repository:\n  owner: a\n  name: b\nci: gitlabci\nnotifier:\n  gitlab:\n    token: token\n"),
+			expected: "gitlab",
 		},
 	}
 	for _, testCase := range testCases {

@@ -103,22 +103,24 @@ terraform:
       {{ .Title }} <sup>[CI link]( {{ .Link }} )</sup>
       {{ .Message }}
       {{if .Result}}
-      <pre><code> {{ .Result }}
+      <pre><code>{{ .Result }}
       </pre></code>
       {{end}}
       <details><summary>Details (Click me)</summary>
-      <pre><code> {{ .Body }}
+
+      <pre><code>{{ .Body }}
       </pre></code></details>
   apply:
     template: |
       {{ .Title }}
       {{ .Message }}
       {{if .Result}}
-      <pre><code> {{ .Result }}
+      <pre><code>{{ .Result }}
       </pre></code>
       {{end}}
       <details><summary>Details (Click me)</summary>
-      <pre><code> {{ .Body }}
+
+      <pre><code>{{ .Body }}
       </pre></code></details>
 ```
 
@@ -134,6 +136,57 @@ notifier:
   github:
     token: $GITHUB_TOKEN
     base_url: $GITHUB_BASE_URL
+    repository:
+      owner: "mercari"
+      name: "tfnotify"
+terraform:
+  fmt:
+    template: |
+      {{ .Title }}
+
+      {{ .Message }}
+
+      {{ .Result }}
+
+      {{ .Body }}
+  plan:
+    template: |
+      {{ .Title }} <sup>[CI link]( {{ .Link }} )</sup>
+      {{ .Message }}
+      {{if .Result}}
+      <pre><code>{{ .Result }}
+      </pre></code>
+      {{end}}
+      <details><summary>Details (Click me)</summary>
+
+      <pre><code>{{ .Body }}
+      </pre></code></details>
+  apply:
+    template: |
+      {{ .Title }}
+      {{ .Message }}
+      {{if .Result}}
+      <pre><code>{{ .Result }}
+      </pre></code>
+      {{end}}
+      <details><summary>Details (Click me)</summary>
+
+      <pre><code>{{ .Body }}
+      </pre></code></details>
+```
+
+</details>
+
+<details>
+<summary>For GitLab</summary>
+
+```yaml
+---
+ci: gitlabci
+notifier:
+  gitlab:
+    token: $GITLAB_TOKEN
+    base_url: $GITLAB_BASE_URL
     repository:
       owner: "mercari"
       name: "tfnotify"
@@ -170,7 +223,6 @@ terraform:
       <pre><code> {{ .Body }}
       </pre></code></details>
 ```
-
 </details>
 
 <details>
@@ -233,10 +285,19 @@ Currently, supported CI are here:
 - Circle CI
 - Travis CI
 - AWS CodeBuild
+- TeamCity
+- Drone
+- Jenkins
+- GitLab CI
 
 ### Private Repository Considerations
 GitHub private repositories require the `repo` and `write:discussion` permissions.
 
+### Jenkins Considerations
+- Plugin
+  - [Git Plugin](https://wiki.jenkins.io/display/JENKINS/Git+Plugin)
+- Environment Variable
+  - `PULL_REQUEST_NUMBER` or `PULL_REQUEST_URL` are required to set by user for Pull Request Usage
 
 ## Committers
 
