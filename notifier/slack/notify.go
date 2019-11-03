@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/lestrrat-go/slack/objects"
 	"github.com/mercari/tfnotify/terraform"
+	"github.com/lestrrat-go/slack/objects"
 )
 
 // NotifyService handles communication with the notification related
