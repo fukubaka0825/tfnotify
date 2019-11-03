@@ -61,6 +61,9 @@ func codebuild() (ci CI, err error) {
 	if pr == "" {
 		return ci, nil
 	}
+	if !strings.Contains(sourceVersion,"pr/") {
+		return ci, nil
+	}
 	ci.PR.Number, err = strconv.Atoi(pr)
 	return ci, err
 }
