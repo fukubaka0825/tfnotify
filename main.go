@@ -138,7 +138,6 @@ func (t *tfnotify) Run() error {
 			Parser:   t.parser,
 			Template: t.template,
 		})
-        fmt.Printf("client:%v",client)
 		if err != nil {
 			return err
 		}
